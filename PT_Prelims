@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>Platform Technologies: Complete Exam Reviewer</title>
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Monochrome theme: black, white, and neutral grays only. */
+:root{
+  --bg:#000000;
+  --ink:#e8e8e8;
+  --dim:#a8a8a8;
+  --line:#555555;
+  --cyan:#ffffff;
+  --magenta:#d8d8d8;
+  --yellow:#ffffff;
+  --green:#c4c4c4;
+  --red:#b8b8b8;
+  --orange:#9c9c9c;
+  --blue:#eeeeee;
+  --fd:'Figtree',Arial,sans-serif;
+  --fb:'Figtree',Arial,sans-serif;
+  color-scheme:dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{background:var(--bg);scroll-padding-top:calc(env(safe-area-inset-top,0px) + 1rem);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.65;-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+a{color:var(--cyan);text-underline-offset:3px}
+a:hover{background:var(--cyan);color:#000;text-decoration:none}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+::selection{background:var(--magenta);color:#000}
+
+/* CRT scanlines */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.05) 0 1px,transparent 1px 3px)}
+body.no-crt::after{display:none}
+
+/* ---------- Hero ---------- */
+.hero{max-width:1200px;margin:0 auto;padding:1.25rem 1.25rem 2.5rem}
+.hero-top{display:flex;justify-content:space-between;gap:1rem;align-items:center;flex-wrap:wrap;color:var(--dim);font-size:.85rem}
+.btn{font:inherit;font-family:var(--fd);font-size:1.25rem;line-height:1;color:var(--c,var(--cyan));background:transparent;border:2px solid var(--c,var(--cyan));padding:.3rem .8rem;cursor:pointer}
+.btn:hover{background:var(--c,var(--cyan));color:#000}
+.btn[aria-pressed="true"]{background:var(--c,var(--cyan));color:#000}
+.hero h1{font-family:var(--fd);font-weight:400;font-size:clamp(3.4rem,13vw,9rem);line-height:.9;margin:2.2rem 0 .6rem;color:var(--ink);
+  text-shadow:4px 4px 0 var(--magenta);letter-spacing:.01em;overflow-wrap:anywhere}
+.hero .sub{font-family:var(--fd);font-size:clamp(1.5rem,4vw,2.2rem);color:var(--cyan);margin:0 0 2rem}
+.boot{list-style:none;margin:0;padding:0;max-width:46rem;font-size:1rem}
+.boot>li{margin:0 0 1.1rem}
+.boot .tag{font-family:var(--fd);font-size:1.5rem;color:var(--c);margin-right:.6rem}
+.boot .head{font-weight:700;color:var(--ink)}
+.boot ul{list-style:none;margin:.3rem 0 0 3.2rem;padding:0;color:var(--dim)}
+.boot ul li{margin:.1rem 0}
+.boot ul li::before{content:"- ";color:var(--c)}
+.prompt{font-family:var(--fd);font-size:1.5rem;color:var(--green);margin:1.4rem 0 0}
+.cur{display:inline-block;width:.6em;height:1.05em;background:var(--green);vertical-align:-.15em;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.js .boot .bl{opacity:0}
+.js .boot .bl.on{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  .js .boot .bl{opacity:1}
+  .cur{animation:none}
+  html{scroll-behavior:auto}
+}
+
+/* ---------- Layout ---------- */
+.layout{max-width:1200px;margin:0 auto;padding:0 1.25rem 3rem;display:grid;grid-template-columns:290px minmax(0,1fr);gap:2.5rem;align-items:start}
+.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 1rem);max-height:calc(100vh - 2rem);overflow:auto;border:2px solid var(--line);padding:.25rem .75rem .9rem}
+.toc summary{font-family:var(--fd);font-size:1.6rem;cursor:pointer;color:var(--ink);padding:.3rem 0}
+.toc ol{list-style:none;margin:.3rem 0 0;padding:0}
+.toc li{margin:0}
+.toc a{display:block;padding:.15rem .5rem;border-left:4px solid var(--c);color:var(--ink);text-decoration:none;font-size:.86rem;line-height:1.45;margin:2px 0}
+.toc a:hover,.toc a.on{background:var(--c);color:#000}
+.legend{margin:1rem 0 0;padding:.7rem 0 0;border-top:1px dashed var(--line);font-size:.78rem;color:var(--dim)}
+.legend p{margin:0 0 .35rem;color:var(--ink)}
+.legend span{display:flex;gap:.5rem;align-items:center;margin:.15rem 0}
+.legend i{display:inline-block;width:.9rem;height:.9rem;background:var(--c);flex:none}
+@media (max-width:900px){
+  .layout{grid-template-columns:minmax(0,1fr);gap:1.5rem}
+  .toc{position:static;max-height:none}
+}
+
+/* scope colors */
+.g-os{--c:var(--cyan)}
+.g-state{--c:var(--green)}
+.g-sched{--c:var(--yellow)}
+.g-extra{--c:#888888}
+.g-review{--c:var(--magenta)}
+
+/* ---------- Windows ---------- */
+main{min-width:0}
+.win{--c:var(--cyan);border:3px double var(--c);margin:0 0 2.75rem;background:var(--bg)}
+.win>header{background:var(--c);color:#000;padding:.1rem 1rem}
+.win>header h2{margin:0;font-family:var(--fd);font-weight:400;font-size:clamp(1.6rem,4.2vw,2.2rem);line-height:1.25}
+.win .body{padding:1.1rem 1.4rem 1.5rem}
+@media (max-width:520px){.win .body{padding:1rem .9rem 1.2rem}}
+.body h3{font-family:var(--fd);font-weight:400;font-size:1.9rem;line-height:1.2;color:var(--c);margin:2rem 0 .4rem}
+.body h3:first-child{margin-top:.6rem}
+.body h4{font-family:var(--fb);font-size:1rem;font-weight:700;color:var(--ink);margin:1.4rem 0 .2rem}
+.body p{margin:.6rem 0;max-width:72ch}
+.body ul,.body ol{margin:.6rem 0;padding-left:1.4rem;max-width:72ch}
+.body li{margin:.25rem 0}
+.body ul{list-style:square}
+.body li::marker{color:var(--c)}
+strong,b{color:#fff;font-weight:700}
+.ans{color:var(--yellow);font-weight:700}
+.clue{border-left:4px solid var(--magenta);margin:1.1rem 0;padding:.35rem 0 .35rem 1rem;max-width:72ch}
+.clue p{margin:.2rem 0}
+.clue .lab{font-family:var(--fd);font-size:1.3rem;color:var(--magenta)}
+.clue q{quotes:none;color:var(--ink);font-style:italic}
+.clue q::before,.clue q::after{content:""}
+
+dl.terms{display:grid;grid-template-columns:max-content 1fr;gap:.35rem 1.4rem;margin:.8rem 0;max-width:72ch}
+dl.terms dt{font-family:var(--fd);font-size:1.5rem;color:var(--c);line-height:1.3}
+dl.terms dd{margin:0}
+@media (max-width:520px){dl.terms{grid-template-columns:1fr;gap:0}dl.terms dd{margin-bottom:.7rem}}
+
+.mem{margin:1rem 0;padding:.9rem 1.1rem;border:1px solid var(--line);border-left:4px solid var(--c);overflow-x:auto;font-family:var(--fb);font-size:.92rem;line-height:1.55;color:var(--ink);white-space:pre}
+.formula{font-family:var(--fd);font-size:2rem;line-height:1.2;color:var(--yellow);margin:.5rem 0}
+
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin:1rem 0}
+.flow .node{border:2px solid var(--c);padding:.5rem 1rem;font-family:var(--fd);font-size:1.6rem;line-height:1.1;color:var(--ink)}
+.flow .arr{font-family:var(--fd);font-size:1.8rem;color:var(--yellow)}
+@media (max-width:520px){.flow{flex-direction:column;align-items:flex-start}.flow .arr{transform:rotate(90deg);margin-left:1rem}}
+
+.tw{overflow-x:auto;margin:1rem 0}
+table{border-collapse:collapse;width:100%;min-width:30rem;font-size:.92rem}
+th,td{border:1px solid var(--line);padding:.5rem .75rem;text-align:left;vertical-align:top}
+th{border-bottom:2px solid var(--c);color:var(--c);font-family:var(--fd);font-size:1.3rem;font-weight:400;line-height:1.2}
+td.n,th.n{text-align:right}
+td.st{font-family:var(--fd);font-size:1.4rem;line-height:1.2}
+
+/* five-state diagram */
+.diagram{margin:1rem 0;overflow-x:auto}
+.diagram svg{display:block;width:100%;min-width:560px;height:auto}
+.diagram text{font-family:var(--fd)}
+.diagram .s{font-size:26px}
+.diagram .d{font-size:15px;fill:var(--dim)}
+.diagram .e{font-size:17px;fill:var(--ink)}
+
+/* scenarios */
+.sc{border:1px solid var(--line);margin:.5rem 0;max-width:72ch}
+.sc summary{cursor:pointer;padding:.55rem .9rem .55rem 3rem;position:relative;list-style:none}
+.sc summary::-webkit-details-marker{display:none}
+.sc summary::before{content:"[+]";position:absolute;left:.8rem;color:var(--c);font-family:var(--fd);font-size:1.3rem;line-height:1.5}
+.sc[open] summary::before{content:"[-]"}
+.sc summary b{color:var(--c)}
+.sc[open]{border-color:var(--c)}
+.sc .ans{margin:0;padding:.1rem .9rem .7rem 3rem;font-family:var(--fd);font-size:1.6rem}
+.sc .ans::before{content:"Answer: ";color:var(--dim)}
+.tools{display:flex;gap:.7rem;flex-wrap:wrap;margin:.6rem 0 1rem}
+
+/* lab */
+.lab{margin:.5rem 0}
+.lab fieldset{border:1px solid var(--line);margin:0 0 1rem;padding:.5rem .8rem .8rem;min-width:0}
+.lab legend{font-family:var(--fd);font-size:1.4rem;color:var(--c);padding:0 .4rem}
+.algo{display:flex;flex-wrap:wrap;gap:.6rem}
+.algo label{cursor:pointer;position:relative}
+.algo input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.algo span{display:block;font-family:var(--fd);font-size:1.5rem;line-height:1;border:2px solid var(--c);padding:.35rem .9rem;color:var(--c)}
+.algo input:checked+span{background:var(--c);color:#000}
+.algo input:focus-visible+span{outline:3px solid var(--cyan);outline-offset:2px}
+.lab input[type=number],.lab input[type=text]{font:inherit;font-size:.95rem;background:#000;color:var(--ink);border:1px solid var(--dim);padding:.3rem .5rem;width:5.5rem}
+.lab input[type=text]{width:5rem}
+.lab input:focus-visible{border-color:var(--yellow)}
+.qrow{display:flex;gap:.7rem;align-items:center;margin:0 0 1rem}
+.lab table.in{min-width:22rem;width:auto}
+.lab table.in td{padding:.3rem .6rem}
+.lab .rm{font-family:var(--fd);font-size:1.3rem;color:var(--red);background:none;border:1px solid var(--red);padding:.1rem .6rem;cursor:pointer;line-height:1.2}
+.lab .rm:hover{background:var(--red);color:#000}
+#labmsg{min-height:1.6rem;color:var(--red);margin:.6rem 0}
+.gwrap{overflow-x:auto;padding:1.2rem 1.5rem 2.2rem 1.2rem;margin:.6rem 0}
+.gantt{display:flex;width:100%;min-width:min-content}
+.seg{position:relative;flex:1 1 0;min-width:2.8rem;height:3.2rem;display:flex;align-items:center;justify-content:center;color:#000;font-family:var(--fd);font-size:1.5rem;border-right:2px solid #000}
+.seg.idle{background:repeating-linear-gradient(45deg,#2a2a2a 0 6px,#000 6px 12px);color:var(--dim);font-size:1.15rem;border:1px solid var(--line)}
+.seg .t{position:absolute;bottom:-1.6rem;font-family:var(--fb);font-size:.8rem;color:var(--ink);transform:translateX(-50%);left:0}
+.seg .t.end{left:auto;right:0;transform:translateX(50%)}
+.best{color:var(--yellow)}
+.note{font-size:.85rem;color:var(--dim)}
+
+footer.site{max-width:1200px;margin:0 auto;padding:0 1.25rem 3rem;color:var(--dim);font-size:.85rem}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-top">
+    <span>Exam reviewer, loaded from your notes</span>
+    <button class="btn" id="crt" type="button" aria-pressed="true">CRT effect: on</button>
+  </div>
+  <h1>Platform<br>Technologies</h1>
+  <p class="sub">Complete exam reviewer</p>
+
+  <ul class="boot" aria-label="Exam scope">
+    <li class="bl g-os">
+      <span class="tag">[1]</span><span class="head">Scenario-based exam</span>
+      <ul>
+        <li><a href="#p3">Operating system and hardware interaction</a></li>
+        <li><a href="#p1">Program, process, threads, and CPU cores</a></li>
+      </ul>
+    </li>
+    <li class="bl g-state">
+      <span class="tag">[2]</span><span class="head">Application</span>
+      <ul>
+        <li><a href="#p7">Five-state process model</a></li>
+      </ul>
+    </li>
+    <li class="bl g-sched">
+      <span class="tag">[3]</span><span class="head">Computation</span>
+      <ul>
+        <li><a href="#p14">FCFS</a></li>
+        <li><a href="#p15">SJB</a></li>
+        <li><a href="#p16">SRTF</a></li>
+        <li><a href="#p17">Round Robin</a></li>
+      </ul>
+    </li>
+    <li class="bl g-review">
+      <span class="tag">[+]</span><span class="head">Practice</span>
+      <ul>
+        <li><a href="#lab">Scheduler lab: build the Gantt chart and check your answers</a></li>
+        <li><a href="#p21">Scenario practice with hidden answers</a></li>
+      </ul>
+    </li>
+  </ul>
+  <p class="prompt bl" aria-hidden="true">C:\REVIEWER&gt; <span class="cur"></span></p>
+</header>
+
+<div class="layout">
+  <details class="toc" id="toc" open>
+    <summary>Contents</summary>
+    <nav aria-label="Reviewer sections">
+      <ol>
+        <li><a class="g-os" href="#p1">I. Introduction to OS</a></li>
+        <li><a class="g-os" href="#p2">II. OS components</a></li>
+        <li><a class="g-os" href="#p3">III. Hardware managed by the OS</a></li>
+        <li><a class="g-os" href="#p4">IV. OS as an extended machine</a></li>
+        <li><a class="g-os" href="#p5">V. OS as a resource manager</a></li>
+        <li><a class="g-os" href="#p6">VI. System calls and interrupts</a></li>
+        <li><a class="g-state" href="#p7">VII. Five-state process model</a></li>
+        <li><a class="g-sched" href="#p8">VIII. CPU scheduling</a></li>
+        <li><a class="g-sched" href="#p9">IX. Scheduling terminology</a></li>
+        <li><a class="g-sched" href="#p10">X. Preemptive vs non-preemptive</a></li>
+        <li><a class="g-sched" href="#p11">XI. Policy vs algorithm</a></li>
+        <li><a class="g-sched" href="#p12">XII. Four core formulas</a></li>
+        <li><a class="g-sched" href="#p13">XIII. Standard procedure</a></li>
+        <li><a class="g-sched" href="#p14">XIV. FCFS</a></li>
+        <li><a class="g-sched" href="#p15">XV. SJB</a></li>
+        <li><a class="g-sched" href="#p16">XVI. SRTF</a></li>
+        <li><a class="g-sched" href="#p17">XVII. Round Robin</a></li>
+        <li><a class="g-extra" href="#p18">XVIII. Extra scheduling concepts</a></li>
+        <li><a class="g-extra" href="#p19">XIX. OS performance metrics</a></li>
+        <li><a class="g-extra" href="#p20">XX. Types of operating systems</a></li>
+        <li><a class="g-review" href="#p21">XXI. Scenario practice</a></li>
+        <li><a class="g-sched" href="#p22">XXII. Computation master guide</a></li>
+        <li><a class="g-review" href="#lab">Scheduler lab</a></li>
+        <li><a class="g-sched" href="#p23">XXIII. Four algorithms side by side</a></li>
+        <li><a class="g-review" href="#p24">XXIV. Cheat sheet</a></li>
+        <li><a class="g-review" href="#final">Final exam reminders</a></li>
+      </ol>
+    </nav>
+    <div class="legend">
+      <p>Border color shows the exam scope</p>
+      <span class="g-os"><i></i>Scenario-based exam</span>
+      <span class="g-state"><i></i>Application</span>
+      <span class="g-sched"><i></i>Computation</span>
+      <span class="g-extra"><i></i>Also in the reviewer</span>
+      <span class="g-review"><i></i>Practice and review</span>
+    </div>
+  </details>
+
+  <main>
+
+<!-- ============ PART I ============ -->
+<section class="win g-os" id="p1" aria-labelledby="h1p">
+  <header><h2 id="h1p">Part I: Introduction to Operating Systems</h2></header>
+  <div class="body">
+    <h3>Platform Technologies</h3>
+    <p><strong>Platform Technologies</strong> are extensible hardware and software architectures that provide core services, abstraction layers, and interfaces that allow applications to be built and run.</p>
+    <h4>Core system and infrastructure platforms</h4>
+    <ol>
+      <li>Operating System</li>
+      <li>Computing Platforms</li>
+      <li>Database Platforms</li>
+      <li>Storage Platforms</li>
+    </ol>
+
+    <h3>Operating System</h3>
+    <p>An <strong>Operating System (OS)</strong> is the main software that runs a computer. It acts as a <strong>bridge between the user/application and the computer hardware</strong>.</p>
+    <h4>Basic relationship</h4>
+    <div class="flow" role="img" aria-label="User or application, then operating system, then hardware">
+      <span class="node">User/Application</span><span class="arr">&rarr;</span>
+      <span class="node">Operating System</span><span class="arr">&rarr;</span>
+      <span class="node">Hardware</span>
+    </div>
+    <h4>Examples</h4>
+    <ul><li>Windows</li><li>macOS</li><li>Linux</li></ul>
+
+    <h3>Program vs Process</h3>
+    <dl class="terms">
+      <dt>Program</dt><dd>A set of instructions/software designed to perform a task.</dd>
+      <dt>Process</dt><dd>A program that is currently running.</dd>
+    </dl>
+    <h4>Example</h4>
+    <div class="tw"><table>
+      <thead><tr><th>Microsoft Word...</th><th>It is a</th></tr></thead>
+      <tbody>
+        <tr><td>installed on the computer</td><td class="ans">Program</td></tr>
+        <tr><td>currently running</td><td class="ans">Process</td></tr>
+      </tbody>
+    </table></div>
+    <div class="clue"><p><span class="lab">Exam clue</span></p><p><q>Currently running</q> means <span class="ans">PROCESS</span>.</p></div>
+
+    <h3>Thread</h3>
+    <p>A <strong>thread</strong> is a <strong>unit of execution within a process</strong>.</p>
+    <div class="mem">Process = running program
+Thread  = execution unit inside the process</div>
+    <p>A single process can contain multiple threads.</p>
+
+    <h3>CPU Core</h3>
+    <p>A <strong>core</strong> is an <strong>independent execution unit within a processor</strong>.</p>
+    <p>Example: a quad-core CPU has <strong>4 CPU cores</strong>.</p>
+    <h4>Do not confuse</h4>
+    <dl class="terms">
+      <dt>Program</dt><dd>Software/instructions</dd>
+      <dt>Process</dt><dd>Currently running program</dd>
+      <dt>Thread</dt><dd>Execution unit within a process</dd>
+      <dt>Core</dt><dd>Independent execution unit of a processor</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ PART II ============ -->
+<section class="win g-os" id="p2" aria-labelledby="h2p">
+  <header><h2 id="h2p">Part II: Operating System Components</h2></header>
+  <div class="body">
+    <p>The major OS components in the reviewer are the Kernel, Process Scheduler, Memory Manager, File System, Device Drivers, and User Interface.</p>
+
+    <h3>Kernel</h3>
+    <p>The core part of the OS that manages important system operations.</p>
+    <div class="clue"><p><span class="lab">Exam clue</span></p><p><q>Core part of the operating system</q></p><p>Answer: <span class="ans">KERNEL</span></p></div>
+
+    <h3>Process Scheduler</h3>
+    <p>Responsible for deciding <strong>which process should receive CPU time</strong>.</p>
+
+    <h3>Memory Manager</h3>
+    <p>Manages the computer's <strong>memory resources</strong>.</p>
+
+    <h3>File System</h3>
+    <p>Manages how files are:</p>
+    <ul><li>Stored</li><li>Organized</li><li>Accessed</li></ul>
+
+    <h3>Device Drivers</h3>
+    <p>Software that allows the OS to communicate with hardware devices.</p>
+    <p>Easy memory: <strong>Driver = translator between software and hardware</strong>.</p>
+
+    <h3>User Interface</h3>
+    <p>The part of the system through which users interact with the computer.</p>
+  </div>
+</section>
+
+<!-- ============ PART III ============ -->
+<section class="win g-os" id="p3" aria-labelledby="h3p">
+  <header><h2 id="h3p">Part III: Hardware Managed by the OS</h2></header>
+  <div class="body">
+    <h3>CPU: Central Processing Unit</h3>
+    <p>The processor that executes instructions and performs computations.</p>
+
+    <h3>RAM: Random Access Memory</h3>
+    <p>Memory used by programs and processes while they are running.</p>
+    <div class="clue"><p><span class="lab">Exam clue</span></p><p><q>Temporary working memory used by active programs</q></p><p>Answer: <span class="ans">RAM</span></p></div>
+
+    <h3>Storage Devices</h3>
+    <p>Used to store data. Examples: HDD, SSD.</p>
+
+    <h3>Motherboard</h3>
+    <p>The main circuit board connecting major computer components.</p>
+
+    <h3>GPU: Graphics Processing Unit</h3>
+    <p>Hardware designed primarily for graphics processing and parallel computations.</p>
+
+    <h3>I/O Devices</h3>
+    <p>Input/Output devices used to send data to the computer and receive data from the computer. Examples include keyboards, mice, printers, and other peripherals.</p>
+  </div>
+</section>
+
+<!-- ============ PART IV ============ -->
+<section class="win g-os" id="p4" aria-labelledby="h4p">
+  <header><h2 id="h4p">Part IV: OS as an Extended Machine</h2></header>
+  <div class="body">
+    <p>The OS acts as an <strong>Extended Machine</strong> by hiding complicated low-level hardware details and providing simpler ways for users and programs to interact with the computer.</p>
+    <h4>Three important concepts</h4>
+    <dl class="terms">
+      <dt>Hardware Abstraction</dt><dd>Hides complicated hardware details from users and applications.</dd>
+      <dt>Simplified Interaction</dt><dd>Provides easier ways for users and programs to interact with hardware.</dd>
+      <dt>Consistent APIs</dt><dd>Provides standardized interfaces that applications can use to request services.</dd>
+    </dl>
+    <div class="clue"><p><span class="lab">Exam scenario</span></p><p><q>A programmer can use a standardized interface without directly handling the complicated details of the hardware.</q></p><p>Answer: <span class="ans">OS as an Extended Machine / Consistent APIs</span></p></div>
+  </div>
+</section>
+
+<!-- ============ PART V ============ -->
+<section class="win g-os" id="p5" aria-labelledby="h5p">
+  <header><h2 id="h5p">Part V: OS as a Resource Manager</h2></header>
+  <div class="body">
+    <p>The OS is also a <strong>Resource Manager</strong>. It fairly and efficiently manages resources such as the CPU and memory among competing programs.</p>
+    <h4>Three important concepts</h4>
+    <dl class="terms">
+      <dt>Controlled Allocation</dt><dd>Controls how resources are assigned to programs.</dd>
+      <dt>Time Multiplexing</dt><dd>Multiple processes share a resource by taking turns over time.</dd>
+      <dt>Space Multiplexing</dt><dd>A resource is divided into portions so multiple users/processes can use it.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ PART VI ============ -->
+<section class="win g-os" id="p6" aria-labelledby="h6p">
+  <header><h2 id="h6p">Part VI: System Calls and Interrupts</h2></header>
+  <div class="body">
+    <h3>System Call</h3>
+    <p>A controlled interface through which a user-level program requests a service from the OS kernel.</p>
+    <p>Memory trick: <strong>Program requests OS service = SYSTEM CALL</strong></p>
+    <h3>Interrupt</h3>
+    <p>A signal sent to the CPU telling it to temporarily pause its current work, handle an event, and then return to its previous work.</p>
+    <p>Memory trick: <strong>Interrupt = CPU is alerted to handle an event</strong></p>
+  </div>
+</section>
+
+<!-- ============ PART VII ============ -->
+<section class="win g-state" id="p7" aria-labelledby="h7p">
+  <header><h2 id="h7p">Part VII: Five-State Process Model</h2></header>
+  <div class="body">
+    <p>A process moves through five primary states: New, Ready, Running, Waiting/Blocked, and Terminated.</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 720 350" role="img" aria-label="Five-state diagram. New goes to Ready. Ready goes to Running. Running goes to Terminated, back to Ready when preempted, or to Waiting when it needs I/O. Waiting goes to Ready when the event finishes.">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#d6d6d6"/></marker>
+        </defs>
+        <g fill="none" stroke="#d6d6d6" stroke-width="2" marker-end="url(#ah)">
+          <path d="M140 180 H190"/>
+          <path d="M320 180 H390"/>
+          <path d="M520 180 H570"/>
+          <path d="M430 153 C430 60 280 60 280 153"/>
+          <path d="M450 207 C450 250 400 240 400 278"/>
+          <path d="M320 280 C320 240 265 250 265 207"/>
+        </g>
+        <text class="e" x="165" y="168" text-anchor="middle">admit</text>
+        <text class="e" x="355" y="202" text-anchor="middle">dispatch</text>
+        <text class="e" x="545" y="168" text-anchor="middle">exit</text>
+        <text class="e" x="355" y="66" text-anchor="middle">preempted</text>
+        <text class="e" x="472" y="262">needs I/O or event</text>
+        <text class="e" x="238" y="262" text-anchor="end">I/O or event done</text>
+
+        <g stroke-width="3" fill="#000">
+          <rect x="10" y="153" width="130" height="54" stroke="#ffffff"/>
+          <rect x="190" y="153" width="130" height="54" stroke="#ffffff"/>
+          <rect x="390" y="153" width="130" height="54" stroke="#c4c4c4"/>
+          <rect x="570" y="153" width="140" height="54" stroke="#b8b8b8"/>
+          <rect x="290" y="280" width="140" height="54" stroke="#d8d8d8"/>
+        </g>
+        <text class="s" x="75" y="178" text-anchor="middle" fill="#ffffff">NEW</text>
+        <text class="d" x="75" y="198" text-anchor="middle">being created</text>
+        <text class="s" x="255" y="178" text-anchor="middle" fill="#ffffff">READY</text>
+        <text class="d" x="255" y="198" text-anchor="middle">waiting for CPU</text>
+        <text class="s" x="455" y="178" text-anchor="middle" fill="#c4c4c4">RUNNING</text>
+        <text class="d" x="455" y="198" text-anchor="middle">using the CPU</text>
+        <text class="s" x="640" y="178" text-anchor="middle" fill="#b8b8b8">TERMINATED</text>
+        <text class="d" x="640" y="198" text-anchor="middle">finished</text>
+        <text class="s" x="360" y="305" text-anchor="middle" fill="#d8d8d8">WAITING</text>
+        <text class="d" x="360" y="325" text-anchor="middle">waiting for event/I/O</text>
+      </svg>
+    </div>
+    <p class="note">The reviewer's memory diagram shows New, Ready, Running, then Waiting (back to Ready) or Terminated. The Running-to-Ready "preempted" arrow is added here because preemptive scheduling (SRTF, Round Robin) moves a running process back to the ready queue.</p>
+
+    <h3>NEW</h3>
+    <p>The process is <strong>being created</strong>.</p>
+    <div class="clue"><p><span class="lab">Scenario</span></p><p><q>The OS is creating a newly launched application.</q></p><p>Answer: <span class="ans">NEW</span></p></div>
+
+    <h3>READY</h3>
+    <p>The process is ready to run but waiting for CPU time. <strong>READY = waiting for CPU</strong></p>
+
+    <h3>RUNNING</h3>
+    <p>The process is currently executing instructions using the CPU. <strong>RUNNING = using CPU</strong></p>
+
+    <h3>WAITING / BLOCKED</h3>
+    <p>The process is waiting for an event or I/O operation to finish. <strong>WAITING = waiting for event/I/O</strong></p>
+
+    <h3>TERMINATED</h3>
+    <p>The process has finished its execution.</p>
+
+    <h3>Quick identification</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Situation</th><th>State</th></tr></thead>
+      <tbody>
+        <tr><td>Being created</td><td class="st" style="color:var(--cyan)">NEW</td></tr>
+        <tr><td>Waiting for CPU</td><td class="st" style="color:var(--yellow)">READY</td></tr>
+        <tr><td>Currently executing</td><td class="st" style="color:var(--green)">RUNNING</td></tr>
+        <tr><td>Waiting for I/O/event</td><td class="st" style="color:var(--magenta)">WAITING/BLOCKED</td></tr>
+        <tr><td>Finished</td><td class="st" style="color:var(--red)">TERMINATED</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ============ PART VIII ============ -->
+<section class="win g-sched" id="p8" aria-labelledby="h8p">
+  <header><h2 id="h8p">Part VIII: CPU Scheduling</h2></header>
+  <div class="body">
+    <p><strong>CPU Scheduling</strong> is the OS method of selecting processes from the <strong>ready queue</strong> and assigning them to the CPU.</p>
+    <dl class="terms">
+      <dt>Process Scheduling</dt><dd>The broader concept of deciding which process should execute.</dd>
+      <dt>CPU Scheduler</dt><dd>Also called the <strong>Short-Term Scheduler</strong>. It selects a process/thread from the ready queue to execute.</dd>
+      <dt>Ready Queue</dt><dd>A queue containing processes that are ready to execute and waiting for CPU time.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ PART IX ============ -->
+<section class="win g-sched" id="p9" aria-labelledby="h9p">
+  <header><h2 id="h9p">Part IX: CPU Scheduling Terminologies</h2></header>
+  <div class="body">
+    <dl class="terms">
+      <dt>CPU Burst</dt><dd>The period during which a process executes on the CPU.</dd>
+      <dt>I/O Burst</dt><dd>The period when a process performs or waits for an I/O operation.</dd>
+      <dt>Context Switch</dt><dd>Switching CPU execution from one process/thread to another.</dd>
+      <dt>Overhead</dt><dd>Context switch overhead: the CPU spends time performing the switch instead of executing application instructions.</dd>
+    </dl>
+    <p>During a context switch, the OS:</p>
+    <ol>
+      <li>Saves the state of the current process.</li>
+      <li>Restores the state of another process.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ PART X ============ -->
+<section class="win g-sched" id="p10" aria-labelledby="h10p">
+  <header><h2 id="h10p">Part X: Preemptive vs Non-Preemptive</h2></header>
+  <div class="body">
+    <h3>Preemptive scheduling</h3>
+    <p>The OS can <strong>interrupt a running process and give the CPU to another process</strong>.</p>
+    <p>Preemptive algorithms in scope: <strong>SRTF</strong> and <strong>Round Robin</strong>.</p>
+    <h3>Non-preemptive scheduling</h3>
+    <p>Once a process gets the CPU, it generally keeps it until it finishes or needs I/O.</p>
+    <p>Non-preemptive algorithms in scope: <strong>FCFS</strong> and <strong>SJB</strong>.</p>
+  </div>
+</section>
+
+<!-- ============ PART XI ============ -->
+<section class="win g-sched" id="p11" aria-labelledby="h11p">
+  <header><h2 id="h11p">Part XI: Scheduling Policy vs Algorithm</h2></header>
+  <div class="body">
+    <dl class="terms">
+      <dt>Scheduling Policy</dt><dd>The general rule for deciding who should run.</dd>
+      <dt>Scheduling Algorithm</dt><dd>The specific procedure used to implement that decision.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ PART XII ============ -->
+<section class="win g-sched" id="p12" aria-labelledby="h12p">
+  <header><h2 id="h12p">Part XII: Four Core CPU Scheduling Formulas</h2></header>
+  <div class="body">
+    <h3>Completion Time (CT)</h3>
+    <p>The time at which a process finishes. On a Gantt chart, look at the <strong>right/end point</strong> of the process.</p>
+
+    <h3>Turnaround Time (TAT)</h3>
+    <p>Total time from arrival until completion.</p>
+    <p class="formula">TAT = CT - AT</p>
+    <p>CT is Completion Time and AT is Arrival Time.</p>
+
+    <h3>Waiting Time (WT)</h3>
+    <p>Total time spent waiting for the CPU.</p>
+    <p class="formula">WT = TAT - BT</p>
+    <p>TAT is Turnaround Time and BT is Burst Time.</p>
+
+    <h3>Response Time (RT)</h3>
+    <p>Time from arrival until the process <strong>first starts running</strong>.</p>
+    <p class="formula">RT = First Start Time - AT</p>
+
+    <h3>Formula memory box</h3>
+    <div class="mem">CT  = time process finishes
+
+TAT = CT - AT
+
+WT  = TAT - BT
+
+RT  = First Start Time - AT</div>
+  </div>
+</section>
+
+<!-- ============ PART XIII ============ -->
+<section class="win g-sched" id="p13" aria-labelledby="h13p">
+  <header><h2 id="h13p">Part XIII: Standard CPU Scheduling Procedure</h2></header>
+  <div class="body">
+    <p>Follow these steps for every computation:</p>
+    <ol>
+      <li>Read the processes.</li>
+      <li>Identify the scheduling rule.</li>
+      <li>Build the <strong>Gantt Chart</strong>.</li>
+      <li>Determine <strong>CT</strong>.</li>
+      <li>Calculate <strong>TAT</strong>.</li>
+      <li>Calculate <strong>WT</strong>.</li>
+      <li>Calculate <strong>RT</strong>.</li>
+      <li>Calculate <strong>averages</strong>.</li>
+      <li>Interpret the result.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ PART XIV ============ -->
+<section class="win g-sched" id="p14" aria-labelledby="h14p">
+  <header><h2 id="h14p">Part XIV: FCFS (First Come, First Served)</h2></header>
+  <div class="body">
+    <p>FCFS executes processes based on <strong>arrival order</strong>. It is <strong>non-preemptive</strong>.</p>
+    <p class="formula">WHO ARRIVES FIRST = RUNS FIRST</p>
+    <h3>FIFO</h3>
+    <p>FCFS uses <strong>First In, First Out</strong>. Processes enter at the <strong>tail</strong> and leave from the <strong>head</strong>.</p>
+    <h3>Convoy Effect</h3>
+    <p>Occurs when a <strong>CPU-bound process with a long CPU burst blocks multiple I/O-bound processes with short CPU bursts</strong>.</p>
+    <div class="clue"><p><span class="lab">Exam clue</span></p><p><q>Long process is holding the CPU and many short processes are waiting.</q></p><p>Answer: <span class="ans">CONVOY EFFECT</span></p></div>
+  </div>
+</section>
+
+<!-- ============ PART XV ============ -->
+<section class="win g-sched" id="p15" aria-labelledby="h15p">
+  <header><h2 id="h15p">Part XV: SJB (Shortest Job First)</h2></header>
+  <div class="body">
+    <p>SJB selects the waiting process with the <strong>smallest CPU burst time</strong>. It is <strong>non-preemptive</strong>.</p>
+    <p class="formula">SHORTEST BURST = RUN FIRST</p>
+    <p>Once the shortest process starts running, it continues until it finishes or requests I/O.</p>
+    <h3>SJB tie-breaker</h3>
+    <p>If two processes have the same burst time, <strong>use FCFS order</strong>.</p>
+  </div>
+</section>
+
+<!-- ============ PART XVI ============ -->
+<section class="win g-sched" id="p16" aria-labelledby="h16p">
+  <header><h2 id="h16p">Part XVI: SRTF (Shortest Remaining Time First)</h2></header>
+  <div class="body">
+    <p>SRTF is the <strong>preemptive version of SJF</strong>. It selects the process with the <strong>smallest amount of remaining execution time</strong>.</p>
+    <p class="formula">SHORTEST REMAINING = RUN</p>
+    <h3>Key difference</h3>
+    <div class="tw"><table>
+      <thead><tr><th>Algorithm</th><th>Looks at</th></tr></thead>
+      <tbody>
+        <tr><td>SJB</td><td>The original burst time</td></tr>
+        <tr><td>SRTF</td><td>The remaining time</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ============ PART XVII ============ -->
+<section class="win g-sched" id="p17" aria-labelledby="h17p">
+  <header><h2 id="h17p">Part XVII: Round Robin</h2></header>
+  <div class="body">
+    <p>Round Robin is a <strong>preemptive</strong> CPU scheduling algorithm. Each process receives a fixed amount of CPU time called a <strong>time quantum</strong>. Processes take turns in cyclic order.</p>
+    <h3>Time Quantum</h3>
+    <p>A small fixed amount of CPU time assigned to each process. Typical range in the reviewer: <strong>10 to 100 milliseconds</strong>.</p>
+    <h3>Circular Queue</h3>
+    <p>The ready queue operates like a <strong>FIFO ring</strong>, where processes repeatedly take turns until they finish.</p>
+    <div class="mem">P1 -> P2 -> P3 -> P1 -> P2 -> P3</div>
+    <h3>Important RR rule</h3>
+    <p>If a process finishes <strong>before its time quantum expires</strong>, it finishes and leaves the queue. The unused/excess quantum <strong>is not transferred</strong> to the next process.</p>
+    <div class="clue"><p><span class="lab">Possible exam trap</span></p>
+      <p>TQ = 4. P1 only needs 2 units, so P1 uses 2. The remaining 2 units are <strong>not</strong> given to P2. P2 starts its own turn according to the queue.</p></div>
+  </div>
+</section>
+
+<!-- ============ PART XVIII ============ -->
+<section class="win g-extra" id="p18" aria-labelledby="h18p">
+  <header><h2 id="h18p">Part XVIII: Extra Scheduling Concepts</h2></header>
+  <div class="body">
+    <p class="note">These are not in the stated computation scope, but they are in the uploaded reviewer and may appear in identification or scenario questions.</p>
+    <h3>Priority Scheduling</h3>
+    <p>Each process is assigned a <strong>priority</strong>, and the scheduler selects processes according to priority.</p>
+    <dl class="terms">
+      <dt>Priority Number</dt><dd>A number assigned to a process to represent its priority.</dd>
+      <dt>Tie-breaker</dt><dd>If processes have the same priority: FCFS based on arrival order.</dd>
+      <dt>Static Priority</dt><dd>Priority remains fixed.</dd>
+      <dt>Dynamic Priority</dt><dd>Priority can be adjusted by the OS over time.</dd>
+      <dt>Starvation</dt><dd>A low-priority process may continue waiting because higher-priority processes keep arriving.</dd>
+      <dt>Aging</dt><dd>Gradually increases the priority of a waiting process.</dd>
+    </dl>
+    <h3>Multilevel Feedback Queue</h3>
+    <p>An advanced scheduling algorithm that allows processes to move dynamically among multiple ready queues based on CPU burst behavior.</p>
+    <p>Important concept: <strong>new processes enter the highest-priority queue.</strong></p>
+  </div>
+</section>
+
+<!-- ============ PART XIX ============ -->
+<section class="win g-extra" id="p19" aria-labelledby="h19p">
+  <header><h2 id="h19p">Part XIX: OS Performance Metrics</h2></header>
+  <div class="body">
+    <p>The reviewer adds six important performance metrics.</p>
+    <dl class="terms">
+      <dt>CPU Utilization</dt><dd>How much of the time the CPU is busy.</dd>
+      <dt>Throughput</dt><dd>Amount of work or number of processes completed within a given period.</dd>
+      <dt>Turnaround Time</dt><dd>Total time from arrival to completion.</dd>
+      <dt>Waiting Time</dt><dd>Total time a process spends waiting in the ready queue.</dd>
+      <dt>Response Time</dt><dd>Time from arrival to first start.</dd>
+      <dt>Latency</dt><dd>Amount of time before a requested operation or response begins or is received.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ PART XX ============ -->
+<section class="win g-extra" id="p20" aria-labelledby="h20p">
+  <header><h2 id="h20p">Part XX: Types of Operating Systems</h2></header>
+  <div class="body">
+    <dl class="terms">
+      <dt>Batch OS</dt><dd>Processes jobs in batches without requiring continuous user interaction.</dd>
+      <dt>Multiprogramming</dt><dd>Allows multiple programs to stay in memory so the CPU can switch between them.</dd>
+      <dt>Multiprocessing</dt><dd>Uses multiple processors/CPU cores to execute work.</dd>
+      <dt>Multitasking OS</dt><dd>Allows multiple tasks/programs to appear to run at the same time by sharing CPU time.</dd>
+      <dt>Time-Sharing OS</dt><dd>Gives users/processes portions of CPU time so multiple tasks can interact with the system.</dd>
+      <dt>Distributed OS</dt><dd>Manages multiple connected computers and makes them work together as a system.</dd>
+      <dt>Network OS</dt><dd>Provides services for computers connected through a network.</dd>
+      <dt>Real-Time OS</dt><dd>Designed to respond to events within specific timing requirements.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ PART XXI ============ -->
+<section class="win g-review" id="p21" aria-labelledby="h21p">
+  <header><h2 id="h21p">Part XXI: Scenario-Based Practice</h2></header>
+  <div class="body">
+    <p>Read each scenario, answer it in your head, then open it to check.</p>
+    <div class="tools">
+      <button class="btn" type="button" id="showAll">Show all answers</button>
+      <button class="btn" type="button" id="hideAll">Hide all answers</button>
+    </div>
+    <details class="sc"><summary><b>Scenario 1.</b> A student launches VS Code and the application is currently executing.</summary><p class="ans">PROCESS</p></details>
+    <details class="sc"><summary><b>Scenario 2.</b> A process has been created but is waiting for CPU time.</summary><p class="ans">READY</p></details>
+    <details class="sc"><summary><b>Scenario 3.</b> A running process is waiting for a disk operation to finish.</summary><p class="ans">WAITING/BLOCKED</p></details>
+    <details class="sc"><summary><b>Scenario 4.</b> The OS decides which process should receive CPU time.</summary><p class="ans">PROCESS SCHEDULER</p></details>
+    <details class="sc"><summary><b>Scenario 5.</b> A printer requires software that allows the OS to communicate with it.</summary><p class="ans">DEVICE DRIVER</p></details>
+    <details class="sc"><summary><b>Scenario 6.</b> The OS temporarily stops the current process and gives the CPU to another process.</summary><p class="ans">PREEMPTIVE SCHEDULING</p></details>
+    <details class="sc"><summary><b>Scenario 7.</b> A process keeps the CPU until it finishes.</summary><p class="ans">NON-PREEMPTIVE SCHEDULING</p></details>
+    <details class="sc"><summary><b>Scenario 8.</b> Processes are selected according to arrival order.</summary><p class="ans">FCFS</p></details>
+    <details class="sc"><summary><b>Scenario 9.</b> The scheduler chooses the process with the smallest CPU burst.</summary><p class="ans">SJB</p></details>
+    <details class="sc"><summary><b>Scenario 10.</b> A newly arrived process has less remaining execution time than the currently running process.</summary><p class="ans">SRTF</p></details>
+    <details class="sc"><summary><b>Scenario 11.</b> Every process receives a fixed amount of CPU time repeatedly.</summary><p class="ans">ROUND ROBIN</p></details>
+    <details class="sc"><summary><b>Scenario 12.</b> A CPU-bound process causes several short I/O-bound processes to wait.</summary><p class="ans">CONVOY EFFECT</p></details>
+    <details class="sc"><summary><b>Scenario 13.</b> A low-priority process keeps waiting because higher-priority processes continue arriving.</summary><p class="ans">STARVATION</p></details>
+    <details class="sc"><summary><b>Scenario 14.</b> The OS gradually increases a waiting process's priority.</summary><p class="ans">AGING</p></details>
+  </div>
+</section>
+
+<!-- ============ PART XXII ============ -->
+<section class="win g-sched" id="p22" aria-labelledby="h22p">
+  <header><h2 id="h22p">Part XXII: Computation Master Guide</h2></header>
+  <div class="body">
+    <p>For every CPU scheduling problem, make a table like this:</p>
+    <div class="tw"><table>
+      <thead><tr><th>Process</th><th class="n">AT</th><th class="n">BT</th><th class="n">CT</th><th class="n">TAT</th><th class="n">WT</th><th class="n">RT</th></tr></thead>
+      <tbody>
+        <tr><td>P1</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>P2</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>P3</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>P4</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table></div>
+    <p>Then follow:</p>
+    <ol>
+      <li>Determine execution order.</li>
+      <li>Draw the Gantt chart.</li>
+      <li>Get CT from the ending point.</li>
+      <li>Calculate <strong>TAT = CT - AT</strong>.</li>
+      <li>Calculate <strong>WT = TAT - BT</strong>.</li>
+      <li>Calculate <strong>RT = First Start Time - AT</strong>.</li>
+      <li>Calculate averages.</li>
+    </ol>
+    <div class="mem">Average TAT = Total TAT / Number of Processes
+Average WT  = Total WT  / Number of Processes
+Average RT  = Total RT  / Number of Processes</div>
+  </div>
+</section>
+
+<!-- ============ LAB ============ -->
+<section class="win g-review" id="lab" aria-labelledby="hlab">
+  <header><h2 id="hlab">Scheduler Lab</h2></header>
+  <div class="body">
+    <p>Enter your own processes, pick an algorithm, and compare the Gantt chart and the CT, TAT, WT, and RT columns with your worked answer. Times are whole numbers.</p>
+    <div class="lab">
+      <fieldset class="algo" style="--c:var(--yellow)">
+        <legend>Algorithm</legend>
+        <label><input type="radio" name="algo" value="fcfs" checked><span>FCFS</span></label>
+        <label><input type="radio" name="algo" value="sjf"><span>SJB</span></label>
+        <label><input type="radio" name="algo" value="srtf"><span>SRTF</span></label>
+        <label><input type="radio" name="algo" value="rr"><span>Round Robin</span></label>
+      </fieldset>
+      <div class="qrow" id="qrow" hidden>
+        <label for="q">Time quantum</label>
+        <input id="q" type="number" min="1" step="1" value="2">
+      </div>
+
+      <div class="tw">
+        <table class="in" style="--c:var(--magenta)">
+          <thead><tr><th>Process</th><th>AT</th><th>BT</th><th><span class="sr">Remove</span></th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="tools">
+        <button class="btn" type="button" id="add">Add process</button>
+        <button class="btn" type="button" id="reset">Reset sample</button>
+      </div>
+      <p id="labmsg" role="status" aria-live="polite"></p>
+
+      <div id="out"></div>
+    </div>
+    <p class="note">Conventions used: ties in SJB and SRTF go to the earlier arrival. In Round Robin, a process that arrives exactly when a quantum ends joins the queue before the process that was just preempted, and unused quantum is never passed on.</p>
+  </div>
+</section>
+
+<!-- ============ PART XXIII ============ -->
+<section class="win g-sched" id="p23" aria-labelledby="h23p">
+  <header><h2 id="h23p">Part XXIII: The Four Algorithms Side by Side</h2></header>
+  <div class="body">
+    <div class="tw"><table>
+      <thead><tr><th>Algorithm</th><th>Meaning</th><th>Decides based on</th><th>Preemptive?</th></tr></thead>
+      <tbody>
+        <tr><td><strong>FCFS</strong></td><td>First Come, First Served</td><td>Arrival order</td><td><strong>No</strong></td></tr>
+        <tr><td><strong>SJB</strong></td><td>Shortest Job First</td><td>Shortest burst</td><td><strong>No</strong></td></tr>
+        <tr><td><strong>SRTF</strong></td><td>Shortest Remaining Time First</td><td>Shortest remaining time</td><td><strong>Yes</strong></td></tr>
+        <tr><td><strong>RR</strong></td><td>Round Robin</td><td>Time quantum</td><td><strong>Yes</strong></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ============ PART XXIV ============ -->
+<section class="win g-review" id="p24" aria-labelledby="h24p">
+  <header><h2 id="h24p">Part XXIV: Must-Memorize Cheat Sheet</h2></header>
+  <div class="body">
+    <h3>Program / process / thread / core</h3>
+    <div class="mem">PROGRAM  = Software/instructions
+PROCESS  = Program currently running
+THREAD   = Unit of execution within a process
+CORE     = Independent execution unit in a processor</div>
+    <h3>Five states</h3>
+    <div class="mem">NEW        = Being created
+READY      = Waiting for CPU
+RUNNING    = Executing
+WAITING    = Waiting for event/I/O
+TERMINATED = Finished</div>
+    <h3>Scheduling</h3>
+    <div class="mem">FCFS -> FIRST ARRIVAL
+SJB  -> SHORTEST BURST
+SRTF -> SHORTEST REMAINING
+RR   -> TIME QUANTUM</div>
+    <h3>Preemption</h3>
+    <div class="mem">FCFS -> NON-PREEMPTIVE
+SJB  -> NON-PREEMPTIVE
+SRTF -> PREEMPTIVE
+RR   -> PREEMPTIVE</div>
+    <h3>Formulas</h3>
+    <div class="mem">TAT = CT - AT
+WT  = TAT - BT
+RT  = First Start Time - AT</div>
+    <h3>OS components</h3>
+    <div class="mem">Kernel
+Process Scheduler
+Memory Manager
+File System
+Device Drivers
+User Interface</div>
+    <h3>OS hardware</h3>
+    <div class="mem">CPU
+RAM
+Storage
+Motherboard
+GPU
+I/O Devices</div>
+    <h3>Performance metrics</h3>
+    <div class="mem">CPU Utilization
+Throughput
+Turnaround Time
+Waiting Time
+Response Time
+Latency</div>
+  </div>
+</section>
+
+<!-- ============ FINAL ============ -->
+<section class="win g-review" id="final" aria-labelledby="hfinal">
+  <header><h2 id="hfinal">Final Exam Reminders</h2></header>
+  <div class="body">
+    <p>When you see the clue on the left, think the answer on the right.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Clue</th><th>Answer</th></tr></thead>
+      <tbody>
+        <tr><td>"currently running"</td><td class="ans">PROCESS</td></tr>
+        <tr><td>"unit of execution within process"</td><td class="ans">THREAD</td></tr>
+        <tr><td>"waiting for CPU"</td><td class="ans">READY</td></tr>
+        <tr><td>"waiting for I/O"</td><td class="ans">WAITING/BLOCKED</td></tr>
+        <tr><td>"finished"</td><td class="ans">TERMINATED</td></tr>
+        <tr><td>"arrives first"</td><td class="ans">FCFS</td></tr>
+        <tr><td>"smallest burst"</td><td class="ans">SJB</td></tr>
+        <tr><td>"smallest remaining time"</td><td class="ans">SRTF</td></tr>
+        <tr><td>"fixed time slice"</td><td class="ans">ROUND ROBIN</td></tr>
+        <tr><td>"can interrupt current process"</td><td class="ans">PREEMPTIVE</td></tr>
+        <tr><td>"keeps CPU until finished/I/O"</td><td class="ans">NON-PREEMPTIVE</td></tr>
+        <tr><td>"long CPU-bound process blocks short processes"</td><td class="ans">CONVOY EFFECT</td></tr>
+        <tr><td>"low-priority process waits indefinitely"</td><td class="ans">STARVATION</td></tr>
+        <tr><td>"increase priority of waiting process"</td><td class="ans">AGING</td></tr>
+        <tr><td>"time when process finishes"</td><td class="ans">CT</td></tr>
+        <tr><td>"arrival to completion"</td><td class="ans">TAT</td></tr>
+        <tr><td>"time waiting for CPU"</td><td class="ans">WT</td></tr>
+        <tr><td>"arrival to first execution"</td><td class="ans">RT</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer class="site">Platform Technologies exam reviewer. Scope: scenario-based exam, application, and computation.</footer>
+
+<style>
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+
+<script>
+/* ---------- Click feedback: a short, unobtrusive monochrome UI click ---------- */
+(function(){
+  var audioCtx=null;
+  function clickSound(){
+    try{
+      audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+      if(audioCtx.state==='suspended') audioCtx.resume();
+      var now=audioCtx.currentTime, osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+      osc.type='square';
+      osc.frequency.setValueAtTime(880,now);
+      osc.frequency.exponentialRampToValueAtTime(440,now+0.035);
+      gain.gain.setValueAtTime(0.0001,now);
+      gain.gain.exponentialRampToValueAtTime(0.045,now+0.003);
+      gain.gain.exponentialRampToValueAtTime(0.0001,now+0.045);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now); osc.stop(now+0.05);
+    }catch(e){}
+  }
+  document.addEventListener('click',function(e){
+    if(e.target.closest('a,button,summary,label,input,select,textarea,[role="button"]')) clickSound();
+  },true);
+})();
+
+/* ---------- CRT toggle (per-viewer convenience, storage may be unavailable) ---------- */
+(function(){
+  var btn=document.getElementById('crt');
+  function apply(on){
+    document.body.classList.toggle('no-crt',!on);
+    btn.setAttribute('aria-pressed',String(on));
+    btn.textContent='CRT effect: '+(on?'on':'off');
+  }
+  var on=true;
+  try{ if(localStorage.getItem('crt')==='off') on=false; }catch(e){}
+  apply(on);
+  btn.addEventListener('click',function(){
+    on=!on; apply(on);
+    try{ localStorage.setItem('crt',on?'on':'off'); }catch(e){}
+  });
+})();
+
+/* ---------- Boot sequence: one reveal on load ---------- */
+(function(){
+  var items=[].slice.call(document.querySelectorAll('.boot .bl, .prompt.bl'));
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ items.forEach(function(el){el.classList.add('on');}); return; }
+  items.forEach(function(el,i){ setTimeout(function(){el.classList.add('on');},350+i*380); });
+})();
+
+/* ---------- Contents: collapse on small screens, highlight current section ---------- */
+(function(){
+  var toc=document.getElementById('toc');
+  if(window.matchMedia('(max-width:900px)').matches) toc.open=false;
+  var links={}; [].forEach.call(toc.querySelectorAll('a'),function(a){links[a.getAttribute('href').slice(1)]=a;});
+  if(!('IntersectionObserver' in window)) return;
+  var current=null;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        if(current) current.classList.remove('on');
+        current=links[en.target.id]; if(current) current.classList.add('on');
+      }
+    });
+  },{rootMargin:'-15% 0px -70% 0px'});
+  [].forEach.call(document.querySelectorAll('main section[id]'),function(s){io.observe(s);});
+})();
+
+/* ---------- Scenario answers ---------- */
+(function(){
+  var all=function(){return document.querySelectorAll('.sc');};
+  document.getElementById('showAll').addEventListener('click',function(){[].forEach.call(all(),function(d){d.open=true;});});
+  document.getElementById('hideAll').addEventListener('click',function(){[].forEach.call(all(),function(d){d.open=false;});});
+})();
+
+/* ---------- Scheduler engine ---------- */
+/*SCHED-START*/
+function schedule(procs, algo, q){
+  var n=procs.length;
+  var P=procs.map(function(p,i){return {i:i,name:p.name,at:p.at,bt:p.bt,rem:p.bt,start:null,ct:null};});
+  var segs=[];
+  function push(pid,s,e,merge){
+    if(e<=s) return;
+    var l=segs[segs.length-1];
+    if(merge&&l&&l.pid===pid&&l.end===s) l.end=e; else segs.push({pid:pid,start:s,end:e});
+  }
+  function pending(){return P.filter(function(p){return p.ct===null;});}
+  var t=0, done=0;
+
+  if(algo==='fcfs'){
+    var order=P.slice().sort(function(a,b){return a.at-b.at||a.i-b.i;});
+    order.forEach(function(p){
+      if(t<p.at){push(-1,t,p.at,true);t=p.at;}
+      p.start=t; t+=p.bt; p.ct=t; push(p.i,p.start,t,false);
+    });
+  } else if(algo==='sjf'){
+    while(done<n){
+      var av=pending().filter(function(p){return p.at<=t;});
+      if(!av.length){
+        var nx=Math.min.apply(null,pending().map(function(p){return p.at;}));
+        push(-1,t,nx,true); t=nx; continue;
+      }
+      av.sort(function(a,b){return a.bt-b.bt||a.at-b.at||a.i-b.i;});
+      var p=av[0]; p.start=t; t+=p.bt; p.ct=t; push(p.i,p.start,t,false); done++;
+    }
+  } else if(algo==='srtf'){
+    var cur=-1;
+    while(done<n){
+      var av2=P.filter(function(p){return p.rem>0&&p.at<=t;});
+      if(!av2.length){
+        var nx2=Math.min.apply(null,P.filter(function(p){return p.rem>0;}).map(function(p){return p.at;}));
+        push(-1,t,nx2,true); t=nx2; cur=-1; continue;
+      }
+      av2.sort(function(a,b){
+        return a.rem-b.rem || ((b.i===cur)-(a.i===cur)) || a.at-b.at || a.i-b.i;
+      });
+      var r=av2[0]; cur=r.i;
+      if(r.start===null) r.start=t;
+      r.rem--; push(r.i,t,t+1,true); t++;
+      if(r.rem===0){r.ct=t;done++;cur=-1;}
+    }
+  } else if(algo==='rr'){
+    var ord=P.slice().sort(function(a,b){return a.at-b.at||a.i-b.i;});
+    var ptr=0, queue=[];
+    var admit=function(){while(ptr<n&&ord[ptr].at<=t) queue.push(ord[ptr++]);};
+    while(done<n){
+      admit();
+      if(!queue.length){ var nx3=ord[ptr].at; push(-1,t,nx3,true); t=nx3; continue; }
+      var c=queue.shift();
+      if(c.start===null) c.start=t;
+      var run=Math.min(q,c.rem);
+      push(c.i,t,t+run,false); t+=run; c.rem-=run;
+      admit();
+      if(c.rem>0) queue.push(c); else {c.ct=t;done++;}
+    }
+  }
+  var rows=P.map(function(p){
+    var tat=p.ct-p.at, wt=tat-p.bt, rt=p.start-p.at;
+    return {name:p.name,at:p.at,bt:p.bt,ct:p.ct,tat:tat,wt:wt,rt:rt};
+  });
+  function avg(k){return rows.reduce(function(s,r){return s+r[k];},0)/rows.length;}
+  return {segs:segs,rows:rows,avg:{tat:avg('tat'),wt:avg('wt'),rt:avg('rt')},names:P.map(function(p){return p.name;})};
+}
+/*SCHED-END*/
+
+/* ---------- Scheduler lab UI ---------- */
+(function(){
+  var SAMPLE=[{name:'P1',at:0,bt:5},{name:'P2',at:1,bt:3},{name:'P3',at:2,bt:8},{name:'P4',at:3,bt:6}];
+  var rows=SAMPLE.map(function(r){return {name:r.name,at:r.at,bt:r.bt};});
+  var tbody=document.getElementById('rows'), out=document.getElementById('out'), msg=document.getElementById('labmsg');
+  var qIn=document.getElementById('q'), qrow=document.getElementById('qrow');
+  var COLORS=['#ffffff','#e4e4e4','#cccccc','#b4b4b4','#9c9c9c','#888888','#f0f0f0','#d0d0d0','#aaaaaa','#777777'];
+  var LABELS={fcfs:'FCFS',sjf:'SJB',srtf:'SRTF',rr:'Round Robin'};
+  function algo(){return document.querySelector('input[name=algo]:checked').value;}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function fmt2(x){return x.toFixed(2);}
+
+  function renderRows(){
+    tbody.innerHTML='';
+    rows.forEach(function(r,i){
+      var tr=document.createElement('tr');
+      tr.innerHTML=
+        '<td><input type="text" maxlength="6" value="'+esc(r.name)+'" aria-label="Process '+(i+1)+' name" data-k="name" data-i="'+i+'"></td>'+
+        '<td><input type="number" min="0" step="1" value="'+r.at+'" aria-label="'+esc(r.name)+' arrival time" data-k="at" data-i="'+i+'"></td>'+
+        '<td><input type="number" min="1" step="1" value="'+r.bt+'" aria-label="'+esc(r.name)+' burst time" data-k="bt" data-i="'+i+'"></td>'+
+        '<td><button type="button" class="rm" data-rm="'+i+'" aria-label="Remove '+esc(r.name)+'">x</button></td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function validate(){
+    if(!rows.length) return 'Add at least one process.';
+    var total=0, maxAt=0;
+    for(var i=0;i<rows.length;i++){
+      var r=rows[i];
+      if(!r.name.trim()) return 'Give every process a name.';
+      if(!Number.isInteger(r.at)||r.at<0) return r.name+': arrival time must be a whole number, 0 or more.';
+      if(!Number.isInteger(r.bt)||r.bt<1) return r.name+': burst time must be a whole number, 1 or more.';
+      total+=r.bt; if(r.at>maxAt) maxAt=r.at;
+    }
+    if(algo()==='rr'){
+      var q=parseInt(qIn.value,10);
+      if(!Number.isInteger(q)||q<1) return 'Time quantum must be a whole number, 1 or more.';
+    }
+    if(total+maxAt>2000) return 'Keep total burst time plus the latest arrival under 2000.';
+    return '';
+  }
+
+  function ganttHTML(res){
+    var end=res.segs[res.segs.length-1].end;
+    var desc=res.segs.map(function(s){return (s.pid<0?'idle':res.names[s.pid])+' from '+s.start+' to '+s.end;}).join(', ');
+    var h='<div class="gwrap"><div class="gantt" role="img" aria-label="Gantt chart: '+esc(desc)+'">';
+    res.segs.forEach(function(s,idx){
+      var last=idx===res.segs.length-1;
+      var cls='seg'+(s.pid<0?' idle':'');
+      var style='flex-grow:'+(s.end-s.start)+';'+(s.pid<0?'':'background:'+COLORS[s.pid%COLORS.length]+';');
+      h+='<div class="'+cls+'" style="'+style+'">'+(s.pid<0?'idle':esc(res.names[s.pid]))+
+         '<span class="t">'+s.start+'</span>'+(last?'<span class="t end">'+end+'</span>':'')+'</div>';
+    });
+    return h+'</div></div>';
+  }
+
+  function tableHTML(res){
+    var h='<div class="tw"><table style="--c:var(--yellow)"><thead><tr><th>Process</th><th class="n">AT</th><th class="n">BT</th><th class="n">CT</th><th class="n">TAT</th><th class="n">WT</th><th class="n">RT</th></tr></thead><tbody>';
+    res.rows.forEach(function(r){
+      h+='<tr><td>'+esc(r.name)+'</td><td class="n">'+r.at+'</td><td class="n">'+r.bt+'</td><td class="n">'+r.ct+'</td><td class="n">'+r.tat+'</td><td class="n">'+r.wt+'</td><td class="n">'+r.rt+'</td></tr>';
+    });
+    h+='<tr><td><strong>Average</strong></td><td></td><td></td><td></td><td class="n"><strong>'+fmt2(res.avg.tat)+'</strong></td><td class="n"><strong>'+fmt2(res.avg.wt)+'</strong></td><td class="n"><strong>'+fmt2(res.avg.rt)+'</strong></td></tr>';
+    return h+'</tbody></table></div>';
+  }
+
+  function compareHTML(){
+    var q=parseInt(qIn.value,10)||2;
+    var all=['fcfs','sjf','srtf','rr'].map(function(a){return {a:a,res:schedule(rows,a,q)};});
+    var best=Math.min.apply(null,all.map(function(x){return x.res.avg.wt;}));
+    var h='<h3 style="color:var(--yellow)">Compare all four</h3><p class="note">Same processes'+(q?', quantum '+q:'')+'. Step 9 of the procedure: interpret the result. The lowest average waiting time is marked.</p>';
+    h+='<div class="tw"><table style="--c:var(--yellow)"><thead><tr><th>Algorithm</th><th class="n">Avg TAT</th><th class="n">Avg WT</th><th class="n">Avg RT</th></tr></thead><tbody>';
+    all.forEach(function(x){
+      var isBest=Math.abs(x.res.avg.wt-best)<1e-9;
+      h+='<tr><td>'+LABELS[x.a]+'</td><td class="n">'+fmt2(x.res.avg.tat)+'</td><td class="n'+(isBest?' best':'')+'">'+fmt2(x.res.avg.wt)+(isBest?' (lowest)':'')+'</td><td class="n">'+fmt2(x.res.avg.rt)+'</td></tr>';
+    });
+    return h+'</tbody></table></div>';
+  }
+
+  function recompute(){
+    qrow.hidden=(algo()!=='rr');
+    var err=validate();
+    msg.textContent=err;
+    if(err){ out.innerHTML=''; return; }
+    var q=parseInt(qIn.value,10)||2;
+    var res=schedule(rows,algo(),q);
+    out.innerHTML='<h3 style="color:var(--yellow)">Gantt chart: '+LABELS[algo()]+(algo()==='rr'?' (TQ = '+q+')':'')+'</h3>'+ganttHTML(res)+tableHTML(res)+compareHTML();
+  }
+
+  tbody.addEventListener('input',function(e){
+    var t=e.target, i=+t.getAttribute('data-i'), k=t.getAttribute('data-k');
+    if(k==null) return;
+    rows[i][k]= k==='name' ? t.value : (t.value===''?NaN:Number(t.value));
+    recompute();
+  });
+  tbody.addEventListener('click',function(e){
+    var b=e.target.closest('[data-rm]'); if(!b) return;
+    rows.splice(+b.getAttribute('data-rm'),1); renderRows(); recompute();
+  });
+  document.getElementById('add').addEventListener('click',function(){
+    if(rows.length>=10){ msg.textContent='The lab holds up to 10 processes.'; return; }
+    var maxAt=rows.reduce(function(m,r){return Number.isFinite(r.at)&&r.at>m?r.at:m;},0);
+    rows.push({name:'P'+(rows.length+1),at:maxAt,bt:4}); renderRows(); recompute();
+  });
+  document.getElementById('reset').addEventListener('click',function(){
+    rows=SAMPLE.map(function(r){return {name:r.name,at:r.at,bt:r.bt};}); qIn.value=2; renderRows(); recompute();
+  });
+  qIn.addEventListener('input',recompute);
+  [].forEach.call(document.querySelectorAll('input[name=algo]'),function(r){r.addEventListener('change',recompute);});
+
+  renderRows(); recompute();
+})();
+</script>
+</body>
+</html>
